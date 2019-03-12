@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     public Vector3 target;
     private Rigidbody rb;
     private int count;
+    private int count2;
     public Text countText;
     public Text winText;
     public Text doubleornothing;
@@ -25,6 +26,8 @@ public class PlayerController : MonoBehaviour
     //countdown vars
     private float cd = 3.0f;
     private bool cdover = true;
+    private bool loser = false;
+    private bool winner = false;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -41,7 +44,9 @@ public class PlayerController : MonoBehaviour
         if(cdover)
         {
             cd -= Time.deltaTime;
-            winText.text = cd.ToString();
+            winText.text = cd.ToString("0");
+            //winText.text = winText.text.Substring(0, 1);
+            Debug.Log("***" + winText.text + "***");
         }
        
         if (cd < 0)
@@ -59,16 +64,13 @@ public class PlayerController : MonoBehaviour
                 stop = true;
                 minutes = 0;
                 seconds = 0;
+                loser = true;
                 winText.text = "You lose";
                 doubleornothing.text = "Try again?";
                 yes.SetActive(true);
                 no.SetActive(true);
             }
         }
-
-
-        //        fraction = (timeLeft * 100) % 100;
-
     }
     private void FixedUpdate()
     {
@@ -91,7 +93,8 @@ public class PlayerController : MonoBehaviour
             other.gameObject.SetActive(false);
             if(multiplier)
             {
-                count++;
+                count2++;
+               
             }
             else
             {
@@ -111,13 +114,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    private void OnMouseOver()
-    {
-        if(Input.GetMouseButtonDown(0))
-        {
-
-        }
-    }
+   
     void SetCountText()
     {
         countText.text = "Count: " + count.ToString();
@@ -137,16 +134,40 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
         }
     }
+    public void computeScore()
+    {
+        if (loser)
+        {
+            count = 0;
+            count2 = 0;
+        }
+        if (winner)
+        {
+            count = count + (count2 * 2);
+        }
+    }
     public void doubleStart(int i)
     {
-        if(i == 1)
+        if (i == 1)
         {
+            Debug.Log("hit");
             transform.position = target;
             winText.text = "";
             doubleornothing.text = "";
             yes.SetActive(false);
             no.SetActive(false);
-            timeLeft = 90;
+            timeLeft = 60;
+            multiplier = true;
+        }
+        if (i == 2)
+        {
+            Debug.Log("hit");
+            transform.position = target;
+            winText.text = "";
+            doubleornothing.text = "";
+            yes.SetActive(false);
+            no.SetActive(false);
+            timeLeft = 30;
             multiplier = true;
         }
     }
